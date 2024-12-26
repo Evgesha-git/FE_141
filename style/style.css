@@ -257,7 +257,7 @@ body {
 
 .header__main {
   background-image: url(../images/bg.jpg);
-  background-size: 100% 100%;
+  background-size: calc(358px + 438 * (100vw - 320px) / 1600) calc(201px + 247 * (100vw - 320px) / 1600);
   background-repeat: no-repeat;
   background-position: 100%;
 
