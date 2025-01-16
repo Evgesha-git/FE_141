@@ -1,120 +1,118 @@
-/**
- * операторы присваивания =, +=, -=, *=, /=, **=
- * Математические операторы +, -, *, /, *, %
- * Логические операторы &&, ||, !, &, |, 
- * Операторы стравнения >, <, >=, <=, ==, !=, ===, !==
- * остальные операторы .
- * ||, &&, ??
- */
+let nums = '4 98 4 6 1 32 4 65 4 3 5 7 89 7 10 1 36 8 57';
+let min = Infinity;
+let max = -Infinity;
+let buffer = '';
 
-// function getRandomValue (max, min) {
-// return Math.floor(min + Math.random() * (max + 1 - min)) // random (0 .. 1)
-//   let rand = Math.floor(min + Math.random() * (max + 1 - min))
-//   if (rand > 0) {    
-//     return rand
-//   } else if (rand < 0) {
-//     return ''
-//   } else {
-//     return null
-//   }
+for (let i = 0; i < nums.length; i++) {
+  if (nums[i] === ' ') {
+    if (Number(buffer) > max) max = Number(buffer);
+    if (Number(buffer) < min) min = Number(buffer);
+    buffer = ''
+  } else {
+    buffer = buffer + nums[i]
+  }
+}
+
+// nums.split(' ').forEach(num => {
+//   if (+num > max) max = +num
+//   if (+num < min) min = +num
+// })
+
+// console.log(max);
+// console.log(min);
+
+// let n = +prompt('Введите число');
+let n = 2374865;
+
+let nTestBuff = n;
+
+let numString = String(n);
+let numCount = numString.length;
+let summ = 0;
+let numRev = '';
+
+let numLen = 0;
+
+for (let i = 0; i < numString.length; i++) {
+  // console.log(+numString[i]);
+  // summ += +numString[i]; // summ  = summ + Number(numString[i])
+}
+
+// for (let i = numString.length - 1; i >= 0; i--) {
+//   numRev += numString[i]; // numRev = numRev + numString[i]
 // }
 
-// let a = getRandomValue(2, -2) ?? 'false' 
-/**
- * || истинные значяения это любые значения кроме 0, '', null и undefined
- * ?? истинные значяения это любые значения кроме null и undefined
- */
-// console.log(a);
+while (nTestBuff) {
+  let ost = nTestBuff % 10
+  nTestBuff = parseInt(nTestBuff / 10)
+  summ += ost
+  numRev += ost
+  numLen++
+}
 
-// console.log(!true);
+// console.log('Исходное значение: ' + n + ', количество цифр: ' + numLen + ', сумма цифр: ' + summ + ', в обратном порядке: ' + numRev);
+// console.log(nTestBuff);
+
+
+let arr = [
+  1,
+  'string',
+  1 > 2 ? 'Да' : 'Нет',
+  (234).toString(2),
+]
+
+// console.log(arr);
+
+let a = [1, 2, 3, 4, 5, [6, 6.1, 6.2], 7, 8, 9, 10]
+a[5][0]
+
+/**
+ * push - поместить в конец массива
+ * pop - извлечь из конца массива
+ * shift - извлекает из начала массива
+ * unshift - помещает в начала массива
+ * slice - создает новый подмассив, не изменяя исходный
+ * splice - извлекает подмассив, изменяет исходный
+ */
+
+for (let i = 0; i < a.length; i++) {
+  if (typeof a[i] === 'object') {
+    for (let j = 0; j < a[i].length; j++){
+      if (a[i][j] % 2 === 0) {
+        a[i].splice(j, 1, 'Чётное')
+      }
+    }
+  }
+  if (a[i] % 2 === 0) {
+    a.splice(i, 1, 'Чётное')
+  }
+}
+
+console.log(a);
+
+let alf = 'abcdefghijklmnopqrstuvwxyz'
+
+let str = prompt()
+
+if (alf.split('').includes(str[0])) {
+  alert('Всё успешно')
+} else {
+  alert('Всё пропало')
+}
 
 // let flag = false;
 
-// console.log(flag);
+// for (let i = 0; i < alf.length; i++) {
+//   if (str[0] === alf[i]) {
+//     flag = true;
+//     break;
+//   }
+// }
 
-// flag = !flag;
-
-// console.log(flag);
-
-// flag = !flag;
-
-// console.log(flag);
-
-// let b = 1;
-
-// console.log(!!b);
-
-/**
- * if .. else
- * switch case
- * ? :
- */
-
-let number = prompt("Введите число") // prompt возвращает либо строку, либо null
-
-if (isNaN(number)) { // (isNaN <- NaN) -> isNaN -> true, (isNaN <- 12) -> isNaN -> false
-  alert('Ввели не число')
-} else {
-  let num = Number(number)
-  if (num > 0) {
-    alert(num ** 3)
-  } else if (num < 0) {
-    alert(num ** 2)
-  } else {
-    alert('введен 0')
-  }
-}
-
-// let a = 0
-
-// if (a !== 0) {
-//   alert('Истинное значение')
+// if (flag) {
+//   alert('Всё успешно')
 // } else {
-//   alert('Ложное значение')
+//   alert('Всё пропало')
 // }
 
-// let arr = []
-
-// arr.length > 0 && alert('что то там было')
-
-// let val = prompt('Веедите str | number | type')
-
-// switch (val) {
-//   case 'str':
-//     alert('Ввели str')
-//     break;
-//   case 'number':
-//     alert('Ввели number')
-//     break;
-//   case 'TYPE':
-//   case 'Type':
-//   case 'type':
-//     alert('Ввели type')
-//     break;
-//   default:
-//     alert('Ввели не валидное значение')
-//   // break;
-// }
-
-// ? :
-
-function ternal (pattern, treuVal, falseVal) {
-  if (pattern){
-    return treuVal
-  } else {
-    return falseVal
-  }
-}
-
-let test = 23 < 56 ? 
-    23 * 2 > 56 ? 
-      'Верно' : 
-      'Не верно' : 
-  'Не верно'
-let test2 = ternal(
-    23 < 56, 
-    ternal(23 * 2 > 56, 'Верно', 'Не верно'), 
-    'Не верно'
-  )
-console.log(test);
-console.log(test2);
+let c = a.slice(2, 6)
