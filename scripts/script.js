@@ -1,118 +1,223 @@
-let nums = '4 98 4 6 1 32 4 65 4 3 5 7 89 7 10 1 36 8 57';
-let min = Infinity;
-let max = -Infinity;
-let buffer = '';
-
-for (let i = 0; i < nums.length; i++) {
-  if (nums[i] === ' ') {
-    if (Number(buffer) > max) max = Number(buffer);
-    if (Number(buffer) < min) min = Number(buffer);
-    buffer = ''
-  } else {
-    buffer = buffer + nums[i]
-  }
-}
-
-// nums.split(' ').forEach(num => {
-//   if (+num > max) max = +num
-//   if (+num < min) min = +num
-// })
-
-// console.log(max);
-// console.log(min);
-
-// let n = +prompt('Введите число');
-let n = 2374865;
-
-let nTestBuff = n;
-
-let numString = String(n);
-let numCount = numString.length;
-let summ = 0;
-let numRev = '';
-
-let numLen = 0;
-
-for (let i = 0; i < numString.length; i++) {
-  // console.log(+numString[i]);
-  // summ += +numString[i]; // summ  = summ + Number(numString[i])
-}
-
-// for (let i = numString.length - 1; i >= 0; i--) {
-//   numRev += numString[i]; // numRev = numRev + numString[i]
+// let obj = {
+//   key: 'value',
+//   key2: 'v2'
 // }
 
-while (nTestBuff) {
-  let ost = nTestBuff % 10
-  nTestBuff = parseInt(nTestBuff / 10)
-  summ += ost
-  numRev += ost
-  numLen++
-}
-
-// console.log('Исходное значение: ' + n + ', количество цифр: ' + numLen + ', сумма цифр: ' + summ + ', в обратном порядке: ' + numRev);
-// console.log(nTestBuff);
-
-
-let arr = [
-  1,
-  'string',
-  1 > 2 ? 'Да' : 'Нет',
-  (234).toString(2),
-]
+// let arr = [1, 2, 3, 4]
+// arr['key'] = 5
 
 // console.log(arr);
 
-let a = [1, 2, 3, 4, 5, [6, 6.1, 6.2], 7, 8, 9, 10]
-a[5][0]
+// let arrFor = [];
+// let arrWhile = [];
+
+// for (let i = 27; i <= 57; i++) {
+//   arrFor.push(i)
+// }
+
+// let arrWhileItemCount = 27
+// while (arrWhileItemCount <= 57) {
+//   arrWhile.push(arrWhileItemCount)
+//   arrWhileItemCount++
+// }
+
+// console.log(arrFor);
+// console.log(arrWhile);
+
+// let rezult = 0;
+
+// for (let i = 0; i < arrFor.length; i++) {
+//   rezult += arrFor[i]; // rezult = rezult + arrFor[i]
+// }
+
+// console.log(rezult);
+
+// let arr = [12, false, 'Текст', 4, 2, -5, 0];
+// let arrRev = []
+
+// console.log(arr);
+
+// while (arr.length) {
+//   // const item = arr.pop()
+//   arrRev.push(arr.pop())
+// }
+
+// console.log(arrRev);
+
+// function f1(params) {
+//   return params
+// }
+
+// function f2(){
+//   return 6
+// }
+
+// console.log(f1(3453));
+// console.log(f1(f2()));
+
+const marker = '^';
+const h = 10;
+
+for (let i = 1; i <= h; i++) {
+  let line = '';
+  let space = '';
+
+  for (let j = 0; j < i * 2 - 1; j++) {
+    line += marker
+  }
+
+  for (let j = i; j <= h; j++) {
+    space += ' '
+  }
+
+  document.write('<pre style="margin: 0;">' + space + line + '</pre>')
+}
+
+// function f3(params) {
+//   const rez = params + 3
+//   return rez
+// }
+
+// let rez = 5
+
+// function f4 () {
+//   rez += 10
+// }
+
+// function f5 () {
+//   console.log(3);
+// }
+
+// console.log(f6());
+// // console.log(f7()); // Ошибка
+
+
+// function f6() { // function Declaration
+//   let a = 3;
+//   let b = 5;
+//   return a ** b
+// }
+
+// const f7 = function () { // function Expression
+
+//   if (0) {
+//     const f8 = function(){
+//       return 5
+//     }
+//     console.log(f8());
+//   }
+//   let a = 10;
+//   let b = 5;
+//   return a * b 
+// }
+
+// console.log(f7());
+
+// let arr = [1, 2, 3, 4]
+
+// const arrItemMult = function (item) {
+//   if (item % 2 === 0) return item
+// }
+
+// let newArr = arr.filter(arrItemMult)
+
+// console.log(arr);
+// console.log(newArr);
+
+
+// function f9 (callback) {
+//   return callback()
+// }
+
+// console.log(f9(function(){
+//   let a = 5;
+//   let b = 60;
+//   return a * b
+// }));
+
+// const a = 34;
+// console.log(a ** 4);
+
+
+// // IIFE
+// (function() {
+//   console.log('Самовызывающаяся функция');
+// })()
+
+// const anonFunc = () => {
+//   let a = 6; 
+//   let b = 9;
+//   return a + b
+// }
+
+// console.log(anonFunc());
+
+const f1 = () => 5 + 6 // стрелочная функция без параметров всегда определяется с круглыми скобками, если выражение короткое, то не обязательно использовать фигурные скобки и ключевое слово return
+const f2 = x => x ** 3 // если передается один параметр, то круглые скобки при определении можно опустить
+const f3 = (x, y) => x * y // если павраметров 2 и более, то круглые скобки обязательны
+const f4 = (x, y) => {
+  if (x > y) {
+    return x + y
+  } else {
+    return x * y
+  }
+}
+const f5 = (x, y) => x > y ? x + y : x * y
 
 /**
- * push - поместить в конец массива
- * pop - извлечь из конца массива
- * shift - извлекает из начала массива
- * unshift - помещает в начала массива
- * slice - создает новый подмассив, не изменяя исходный
- * splice - извлекает подмассив, изменяет исходный
+ * 
+ * @param {string} marker заполнитель строки
+ * @param {number} lineIndex номер линии пирамиды
+ * @returns {string}
  */
+const createLine = (marker, lineIndex) => {
+  let line = '';
 
-for (let i = 0; i < a.length; i++) {
-  if (typeof a[i] === 'object') {
-    for (let j = 0; j < a[i].length; j++){
-      if (a[i][j] % 2 === 0) {
-        a[i].splice(j, 1, 'Чётное')
-      }
-    }
+  for (let i = 0; i < lineIndex * 2 - 1; i++) {
+    line += marker
   }
-  if (a[i] % 2 === 0) {
-    a.splice(i, 1, 'Чётное')
+
+  return line
+}
+
+const createSpaceLine = (lineIndex, h) => {
+  let space = '';
+
+  for (let i = lineIndex; i <= h; i++) {
+    space += ' '
+  }
+
+  return space
+}
+
+/**
+ * Функция создания пирамидки
+ * @param {string} marker 
+ * @param {number} h 
+ */
+const createPyramid = (marker, h = 5) => {
+  // h = h || 5
+  for (let i = 1; i <= h; i++) {
+    /** @type {string} */
+    let line = createLine(marker, i);
+    let space = createSpaceLine(i, h);
+
+    document.write('<pre style="margin: 0;">' + space + line + '</pre>')
   }
 }
 
-console.log(a);
+createPyramid('*')
 
-let alf = 'abcdefghijklmnopqrstuvwxyz'
+/** @type {string} */
+let s1;
+/** @type {string[]} */
+let arr = [];
 
-let str = prompt()
+arr[arr.length] = 15
+arr[arr.length] = 25
+arr[arr.length] = 35
+arr[arr.length] = 45
+arr[arr.length] = 55
 
-if (alf.split('').includes(str[0])) {
-  alert('Всё успешно')
-} else {
-  alert('Всё пропало')
-}
-
-// let flag = false;
-
-// for (let i = 0; i < alf.length; i++) {
-//   if (str[0] === alf[i]) {
-//     flag = true;
-//     break;
-//   }
-// }
-
-// if (flag) {
-//   alert('Всё успешно')
-// } else {
-//   alert('Всё пропало')
-// }
-
-let c = a.slice(2, 6)
+const item = arr[arr.length - 1]
+arr.length = arr.length - 1
