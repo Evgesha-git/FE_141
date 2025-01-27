@@ -1,134 +1,82 @@
-// {
-//   let a = 0;
-//   {
-//     console.log(a);
-//     let b = 3
-//     {
-//       console.log(b);
-      
-//     }
-//   }
-// }
+let str = 'Lorem ipsum dolor, sit amet consectetur\nadipisicing elit. Provident consectetur temporibus ea rerum cumque repudiandae.';
 
-const makeCounter = function () {
-  let counter = 0;
-  return function () {
-    return counter++
-  }
-}
-
-const counter1 = makeCounter() // создали независимый контейнер со своим counter
-const counter2 = makeCounter() // создали новый независимый контейнер со своим counter
-
-const timeStart = Date.now()
-
-const fib = (n) => {
-  return n <= 1 ? n : fib(n - 1) + fib(n - 2)
-}
+console.log(str.split(' '));
 
 /**
- * fib(3)
- * fib(2) + fib(1) => 1
- * fib(1) + fib(0)
+ * @typedef {Object} FunctionParams
+ * @property {string} string
+ * @property {number} test
  */
 
-// console.log(fib(60));
-const timeEnd = Date.now()
-console.log(timeEnd - timeStart);
-
-const memoize = function (fn) {
-  let cache = {}
-  return function (...args) {
-    let n = args[0]
-    if (n in cache){
-      return cache[n]
-    } else {
-      let result = fn(n)
-      cache[n] = result
-      return result
+/**
+ * @param {string} string 
+ * @returns {number}
+ */
+const strCount = (string) => {
+  let count = 0;
+  for (let i = 0; i < string.length; i++) {
+    if (string[i] === ' ' || string[i] === '\n') {
+      count++
     }
   }
+
+  return count + 1
 }
 
-const fib2 = memoize((n) => {
-  return n <= 1 ? n : fib2(n - 1) + fib2(n - 2)
+const count = strCount(str)
+console.log(count);
+
+/**
+ * @param {string} string
+ * @returns {string}
+ */
+const firstLetterUpper = (string) => {
+  const lineArr = string.split('\n')
+  const stringArr = lineArr.map(function (line) {
+    // const strArr = line.split(' ')
+    // for (let i = 0; i < strArr.length; i++) {
+    //   strArr[i] = strArr[i][0].toUpperCase() + strArr[i].slice(1)
+    // }
+    // return strArr.join(' ')
+    return line
+      .split(' ')
+      .map((item) => item[0].toUpperCase() + item.slice(1))
+      .join(' ')
+  })
+
+  return stringArr.join('\n')
+}
+
+console.log(firstLetterUpper(str));
+
+
+// let reg = /\s+/
+console.log(('                   ajhs           dgfjk          hgdas          fjkas                        ').trim().replace(/\s+/, ' '));
+console.log(('                   ajhs           dgfjk          hgdas          fjkas                        ').trim().replaceAll(/\s+/gi, ' '));
+
+console.log(`sdhfghdfsg
+sdfgkldhsfgkj
+dsfjglfdg
+sdfgjlfds`)
+
+const pyramid = (h) => {
+  for (let i = 1; i <= h; i++) {
+    // document.write('<pre style="margin: 0">' + (' ').repeat(h - i) + ('^').repeat(i * 2 - 1) + '</pre>')
+    document.write(`<pre style='margin: 0;'>${(' ').repeat(h - i)}${('^').repeat(i * 2 - 1)}</pre>`)
+  }
+}
+
+pyramid(10);
+
+let s2 = '1234';
+
+const s3 = [].map.call(s2, function (item) {
+  return item ** 2
+})
+console.log(s3);
+
+const s4 = [].map.bind(s2, function (item) {
+  return item ** 3
 })
 
-console.log(fib2(600));
-
-// 0 1 2 3 4 5
-// 0 1 1 2 3 5
-
-const func2 = function (a, b) {
-  console.log(a, b, arguments);
-  const c = () => {
-    console.log(arguments);
-  }
-
-  c()
-}
-
-func2(1, 2, 3, 4, 5)
-
-/** @deprecated */
-const func3 = function (a, b, ...c) {
-  console.log(a, b, c);
-}
-
-func3(1, 2, 3, 4, 5)
-
-let user = ['Пупкин', 'Вавилий', 'Витальевич', 1, 2, 3, 4, 5]
-
-const [surName, name, lastName, ...other] = user //деструктуризация массива
-console.log(name, surName, lastName, other);
-
-let a1 = 10
-let b1 = 50
-console.log(a1, b1);
-[a1, b1] = [b1, a1] // свопинг
-console.log(a1, b1);
-
-let arr1 = [1, 2, 3]
-let arr2 = arr1
-let arr3 = [...arr1]
-
-function rest (arr) {
-  let result = []
-  for (let i = 0; i < arr.length; i++) {
-    result.push(arr[i])
-  }
-  return result
-}
-
-let arr4 = rest(arr1)
-
-console.log(arr1);
-console.log(arr2);
-console.log(arr3);
-console.log(arr4);
-
-arr1.push(4)
-
-console.log(arr1);
-console.log(arr2);
-console.log(arr3);
-console.log(arr4);
-
-let user2 = {
-  name: 'Alex',
-  age: 23,
-}
-
-let user3 = {
-  lastName: 'Petrov',
-  name: 'Vasya',
-  ...user2
-}
-
-console.log(user3);
-
-const square = document.querySelector('.square')
-
-square.addEventListener('click', () => {
-  square.requestFullscreen()
-})
+console.log(s4());
