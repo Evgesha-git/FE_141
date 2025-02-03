@@ -1,112 +1,110 @@
-const validatePhone = (number) => {
-  const numberRegExp = /^\+?[0-9]{1,3}\([0-9]{2}\)\d\d\d-?\d\d-?\d\d$/g
-  return numberRegExp.test(number)
+const adress = (url) => {
+  const regExt = /(https?:\/\/[a-z][a-z0-9]+(?:\.[a-z0-9]+)*\.[a-z]{2,11})(\/(?:[^#\?\s])+)?(\?[^#]+)?(#\w+)?/gi;
+  const group = regExt.exec(url) || [];
+  return [...group].filter((_, index) => index !== 0)
 }
 
-// const phone = prompt('Введите номер телефона')
-// console.log(validatePhone(phone))
+console.log(adress('https://tech.onliner.by/2018/04/26/smart-do-200/?utm_source=main_tile&utm_medium=smartdo200#zag3'));
 
-let date = 'Lorem ipsum dolor, sit amet consectetur 2007.01.01 adipisicing elit. Possimus, vero.'
-let regDate = /(\d{4})\.(\d{2})\.(\d{2})/i
-console.log(date.replace(regDate, '$3/$2/$1'));
-console.log(regDate.exec(date));
-console.log(date.match(regDate));
+const Lamp = function (power, voltage) {
+  this.power = power;
+  this.voltage = voltage;
+  this.on = false;
+  this.lifeTime = 400; //секунды
+  this.curentLifeTime = 0; //секунды
+  this.timerStop = false
+  this.lampNumber = ++Lamp.counter
 
-const addZero = (time) => time < 10 ? `0${time}` : time
+  /**
+   * lamp1 = Lamp.conter === 1
+   * Lamp.counter === 1
+   * lamp2 = Lapm.conunter === 2
+   * Lamp.counter === 2
+   */
 
+  /**
+   * Инкапсуляция - обеспечение безопасного доступа к приватным свойствам для чтения или записи
+   */
 
-const timer = () => {
-  let dateNow = new Date()
-  console.clear()
-  console.log(`${addZero(dateNow.getHours())}:${addZero(dateNow.getMinutes())}:${addZero(dateNow.getSeconds())}`);
-}
-
-// setInterval(timer, 1000)
-
-const regEmail = /^[a-zA-Z0-9_\.-]{2,}@[a-z0-9_]+\.?[a-z0-9_]+\.[a-z]{1,12}$/g;
-
-const user1 = {
-  email: '',
-  photoURL: '',
-  name: '',
-  registrationDate: '',
-  logOut: function () {
-    console.log(this);
-    
-    this.email = '';
-    this.name = '';
-    this.photoURL = '';
-    this.registrationDate = '';
-  },
-  test: function () {
-    console.log(this);
-    
+  const timerLamp = () => {
+    let timerId = setInterval(() => {
+      if (this.lifeTime === this.curentLifeTime) {
+        this.on === false
+        clearInterval(timerId)
+      } else {
+        this.curentLifeTime += 1
+        if (this.timerStop) {
+          clearInterval(timerId)
+        }
+      }
+    }, 1000)
   }
-}
 
-const user2 = {
-  email: 'lkadshfglkdf@asdfasdf.com',
-  photoURL: 'asdfjhdsafsadf',
-  name: 'dkhfglkdfs',
-  registrationDate: '',
-  logOut: function () {
-    console.log(this);
-    
-    this.email = '';
-    this.name = '';
-    this.photoURL = '';
-    this.registrationDate = '';
-  },
-  test: () => console.log(this)
-}
-
-// console.log(this);
-// user1.test()
-// user2.test()
-
-const User = function (name, email, phone, private) {
-  this._name = name;
-  this._email = email;
-  this._phone = phone;
-  this.getName = () => this._name;
-  this.getPrivate = () => private;
-  this.setPrivate = (value) => {
-    const valReg = /[А-ЯЁа-яё]+/g
-    if (!valReg.test(value)) {
-      private = value;
-    } else {
-      throw new SyntaxError('Неправильные формат данных')
+  this.onToggle = () => {
+    if (this.lifeTime !== this.curentLifeTime) {
+      this.on = !this.on
+      if (this.on) {
+        timerLamp()
+        this.timerStop = false
+      } else {
+        this.timerStop = true
+      }
     }
   }
-  // const self = this
-  // function convertName () {
-  //   console.log(self);
-     
-  //   return self._name.toUpperCase()
-  // }
-  const convertName = () => {
-    console.log(this);
-     
-    return this._name.toUpperCase()
+
+  this.getStatus = () => {
+    if (this.on) {
+      return 'Лампа включена'
+    } else {
+      return 'Лампа выключена'
+    }
   }
-  // this.getConvertName = function () {
-  //   return convertName()
-  // }
-  this.getConvertName = () => {
-    return convertName()
+
+  this.getPowerConsumption = () => {
+    const time = this.curentLifeTime / 60 / 60
+    return this.power * time
   }
-  this.showName = () => console.log(this._name);
-  
+
+  this.getInfo = () => {
+    return `Лампочка ${this.lampNumber} мощностью ${this.power} и напряжением сети ${this.voltage}`
+  }
 }
 
-const user3 = new User('Alex', 'alex@mail.com', '3874568345', 'private')
-console.log(user3.getConvertName().split(''));
+Lamp.counter = 0
 
-// function Student (name, email, phone, group) {
-//   User.call(this, name, email, phone)
-//   this.group = group
-//   this.getName = () => this._name.toUpperCase()
-// }
+const lamp1 = new Lamp(60, 220)
+const lamp2 = new Lamp(80, 220)
 
-// const student = new Student('Alex', 'alex@mail.com', '3874568345', 'private')
-// console.log(student.getName());
+const psevdoConstructor = (name, age) => ({
+  name,
+  age,
+  getName: () => name
+})
+
+const user1 = psevdoConstructor("alex", 22)
+const user2 = psevdoConstructor("Petr", 22)
+
+function Test (test1, test2) {
+  this.test1 = test1;
+  this.test2 = test2;
+  const self = this;
+
+  function test3 () {
+    console.log(this);
+    return self.test1 + self.test2
+  }
+
+  this.test4 = function () {
+    return test3() ** 3
+  }
+
+  this.test5 = function () {
+    return test3() ** 5
+  }
+}
+
+Test.info = function () {
+  return `Данный конструктор объекта нужет только для того, что бы`
+}
+
+const test1 = new Test(1, 4)
