@@ -1,110 +1,144 @@
-const adress = (url) => {
-  const regExt = /(https?:\/\/[a-z][a-z0-9]+(?:\.[a-z0-9]+)*\.[a-z]{2,11})(\/(?:[^#\?\s])+)?(\?[^#]+)?(#\w+)?/gi;
-  const group = regExt.exec(url) || [];
-  return [...group].filter((_, index) => index !== 0)
+/** @type {HTMLElement} */
+const square = document.querySelector('.square');
+const time = getComputedStyle(square);
+console.log(time.transitionDuration);
+
+const getRandomColor = () => {
+  return Math.floor(Math.random() * 256)
 }
 
-console.log(adress('https://tech.onliner.by/2018/04/26/smart-do-200/?utm_source=main_tile&utm_medium=smartdo200#zag3'));
+// square.onclick = (event) => {
+//   square.style.transform = `rotate(${event.timeStamp}deg)`
+// }
 
-const Lamp = function (power, voltage) {
-  this.power = power;
-  this.voltage = voltage;
-  this.on = false;
-  this.lifeTime = 400; //секунды
-  this.curentLifeTime = 0; //секунды
-  this.timerStop = false
-  this.lampNumber = ++Lamp.counter
+// square.onclick = () => {
+//   square.style.background = `rgb(${getRandomColor()}, ${getRandomColor()}, ${getRandomColor()})`
+// }
 
-  /**
-   * lamp1 = Lamp.conter === 1
-   * Lamp.counter === 1
-   * lamp2 = Lapm.conunter === 2
-   * Lamp.counter === 2
-   */
-
-  /**
-   * Инкапсуляция - обеспечение безопасного доступа к приватным свойствам для чтения или записи
-   */
-
-  const timerLamp = () => {
-    let timerId = setInterval(() => {
-      if (this.lifeTime === this.curentLifeTime) {
-        this.on === false
-        clearInterval(timerId)
-      } else {
-        this.curentLifeTime += 1
-        if (this.timerStop) {
-          clearInterval(timerId)
-        }
-      }
-    }, 1000)
-  }
-
-  this.onToggle = () => {
-    if (this.lifeTime !== this.curentLifeTime) {
-      this.on = !this.on
-      if (this.on) {
-        timerLamp()
-        this.timerStop = false
-      } else {
-        this.timerStop = true
-      }
-    }
-  }
-
-  this.getStatus = () => {
-    if (this.on) {
-      return 'Лампа включена'
-    } else {
-      return 'Лампа выключена'
-    }
-  }
-
-  this.getPowerConsumption = () => {
-    const time = this.curentLifeTime / 60 / 60
-    return this.power * time
-  }
-
-  this.getInfo = () => {
-    return `Лампочка ${this.lampNumber} мощностью ${this.power} и напряжением сети ${this.voltage}`
-  }
+const rotateSqare = (event) => {
+  square.style.transform = `rotate(${event.timeStamp}deg)`
 }
 
-Lamp.counter = 0
+const setRandomColor = () => {
+  square.style.background = `rgb(${getRandomColor()}, ${getRandomColor()}, ${getRandomColor()})`
+}
 
-const lamp1 = new Lamp(60, 220)
-const lamp2 = new Lamp(80, 220)
+square.addEventListener('click', rotateSqare)
 
-const psevdoConstructor = (name, age) => ({
-  name,
-  age,
-  getName: () => name
+square.addEventListener('click', setRandomColor)
+
+// square.removeEventListener('click', setRandomColor)
+
+square.addEventListener('transitionstart', () => {
+  square.removeEventListener('click', rotateSqare)
+  square.removeEventListener('click', setRandomColor)
 })
 
-const user1 = psevdoConstructor("alex", 22)
-const user2 = psevdoConstructor("Petr", 22)
+square.addEventListener('transitionend', () => {
+  square.addEventListener('click', rotateSqare)
+  square.addEventListener('click', setRandomColor)
+})
 
-function Test (test1, test2) {
-  this.test1 = test1;
-  this.test2 = test2;
-  const self = this;
+/**
+ * 
+ * @param {string} buttonSelector селектор кнопки
+ * @param {string} menuSelector селектор меню
+ * @returns 
+ */
+const menuOpenener = (buttonSelector, menuSelector) => {
+  /** @type {HTMLElement | null} */
+  const button = document.querySelector(buttonSelector);
+  /** @type {HTMLElement | null} */
+  const menu = document.querySelector(menuSelector);
+  let openFlag = false;
 
-  function test3 () {
-    console.log(this);
-    return self.test1 + self.test2
+  if (!button && !menu) return
+
+  const menuToggle = () => {
+    console.log(menu.classList.contains('active'))
+    if (!openFlag) { // menu.classList.contains('active')
+      menu.classList.add('active');
+      button.innerText = 'Close';
+      openFlag = !openFlag;
+    } else {
+      menu.classList.remove('active');
+      button.innerText = 'Open';
+      openFlag = !openFlag;
+    }
   }
 
-  this.test4 = function () {
-    return test3() ** 3
-  }
-
-  this.test5 = function () {
-    return test3() ** 5
-  }
+  button.addEventListener('click', menuToggle)
+  menu.addEventListener('transitionstart', () => {
+    button.removeEventListener('click', menuToggle)
+  })
+  menu.addEventListener('transitionend', () => {
+    button.addEventListener('click', menuToggle)
+  })
 }
 
-Test.info = function () {
-  return `Данный конструктор объекта нужет только для того, что бы`
+menuOpenener('.menuToggle', '.menu')
+
+/**
+ * 
+ * @param {string} textSelector селектор элемента с текстом
+ */
+const textEdit = (textSelector) => {
+  const textElements = document.querySelectorAll(textSelector)
+
+  /**
+   * 
+   * @param {HTMLElement} textElement 
+   */
+  const textContentEdit = (textElement) => {
+    textElement.addEventListener('dblclick', function () {
+      console.log(this);
+      this.contentEditable = true
+    })
+
+    textElement.addEventListener('click', (event) => {
+      /** @type {HTMLElement} */
+      const target = event.target
+      console.log(event);
+      
+      if (target.nodeName === 'SPAN') {
+        target.innerHTML += '!'
+      }
+      if (target.nodeName === 'P') {
+        target.innerHTML = '!' + target.innerHTML
+      }
+    }, true)
+
+    textElement.addEventListener('keydown', function (event) {
+      console.log(event);
+      
+      if (event.altKey && event.key === 'Enter') {
+        this.contentEditable = false
+      }
+    })
+  }
+
+  textElements.forEach(textContentEdit)
 }
 
-const test1 = new Test(1, 4)
+textEdit('#text')
+
+const listItem = document.createElement('div')
+const contentText = document.createElement('p')
+
+contentText.innerText = 'text'
+contentText.addEventListener('dblclick', function () {
+  this.contentEditable = true
+})
+
+contentText.addEventListener('keydown', function (event) {
+  if (event.altKey && event.key === 'Enter') {
+    this.contentEditable = false
+  }
+})
+
+listItem.append(contentText);
+document.body.append(listItem);
+
+localStorage.setItem('test', 'dfkghkdfj')
+
+console.log(JSON.parse(localStorage.getItem('notes')));
