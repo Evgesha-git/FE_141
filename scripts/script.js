@@ -1,164 +1,94 @@
 /**
- * @todo Дома доработать таким образом, что бы при двайном клике по задаче, или при клике правой кнопкой мыши появлялась возможность редактирования, 
- * а при нажатии Alt + Enter результат сохранялся
- */
-/**
- * @typedef {Object} TypeToDoItemParams
- * @property {number} id
- * @property {string} text
- * @property {boolean} complite
+ * @todo задание на дом: выбрать один из двух вариантов реализации и добавить возможность добавления новых вкладок через кнопку
+ *  в общем списке кнопок для табов, содержание контента может быть любым.
  */
 
 /**
- * @param {TypeToDoItemParams} content 
+ * @typedef {Object} TabsContainerParams
+ * @property {string} tabContainer
+ * @property {string} tabButtons
+ * @property {string} tabContent
  */
-function ToDoItem(content) {
-  this.text = content.text
-  this.id = content.id
-  this.complite = content.complite
-
-  this.setComplite = () => {
-    this.complite = !this.complite
-  }
-
-  this.edit = (newValue) => {
-    this.text = newValue
-  }
-}
 
 /**
  * 
- * @param {string} formSelector селектор формы ввода
- * @param {string} inputSelector селектор текстового поля
- * @param {string} listSelector селектор блока вывода
+ * @param {TabsContainerParams} param0 
  */
-const toListCreator = (formSelector, inputSelector, listSelector) => {
-  const form = document.querySelector(formSelector)
-  const input = document.querySelector(inputSelector)
-  const listContainer = document.querySelector(listSelector)
 
-  if (!form && !input && !listContainer) return
+const tabsContainer = ({ tabContainer, tabButtons, tabContent }) => {
+  const tabContainers = document.querySelectorAll(tabContainer)
 
-  let todoListArr = []
+  /**
+   * 
+   * @param {HTMLDivElement} tabHtmlElement 
+   */
+  const tabHandler = (tabHtmlElement) => {
+    const buttons = tabHtmlElement.querySelector(tabButtons)
+    const content = tabHtmlElement.querySelector(tabContent)
 
-  const localsave = () => {
-    const jsonTodoListArr = JSON.stringify(todoListArr)
-    localStorage.setItem('todoList', jsonTodoListArr)
-  }
+    if (!buttons || !content) return
 
-  const render = () => {
-    listContainer.innerHTML = ''
-    todoListArr.forEach(todoListItem => {
-      const todolistLine = document.createElement('div')
-      todolistLine.classList.add('todo-list--item')
+    const tabContentHendler = (index) => {
+      // for (let contentItem of content.children) {
+      //   if (contentItem.dataset.contentindex === index) {
+      //     contentItem.classList.add('tab-content--active')
+      //   } else {
+      //     contentItem.classList.remove('tab-content--active')
+      //   }
+      // }
 
-      const todoCheckBox = document.createElement('input')
-      todoCheckBox.setAttribute('type', 'checkbox')
-      todoCheckBox.classList.add('todo-list--item-check')
-      todoCheckBox.checked = todoListItem.complite
-
-      todoCheckBox.addEventListener('click', (event) => {
-        event.preventDefault()
-        todoListItem.setComplite()
-        render()
-        localsave()
-      })
-
-      const todoText = document.createElement('p')
-      todoText.classList.add('todo-list--item-text')
-      if (todoListItem.complite) {
-        todoText.classList.add('todo-list--item-text__active')
-      }
-      todoText.innerText = todoListItem.text
-
-      todoText.addEventListener('click', () => {
-        todoListItem.setComplite()
-        render()
-        localsave()
-      })
-
-      const delButton = document.createElement('button')
-      delButton.classList.add('todo-list--item-button')
-      delButton.innerText = 'Del'
-      delButton.addEventListener('click', () => {
-        if (confirm('Вы точно хотите удалить?')) {
-          todoListArr = todoListArr.filter(item => item.id !== todoListItem.id)
-          render()
-          localsave()
+      [...content.children].forEach(item => {
+        if (item.dataset.contentindex === index) {
+          item.classList.add('tab-content--active')
+        } else {
+          item.classList.remove('tab-content--active')
         }
       })
 
-      todolistLine.append(todoCheckBox, todoText, delButton)
-      listContainer.append(todolistLine)
-    })
-  }
-
-  if (localStorage.getItem('todoList')) {
-    const todoListStore = localStorage.getItem('todoList')
-    /** @type {TypeToDoItemParams[]} */
-    const todoListStoreData = JSON.parse(todoListStore)
-
-    todoListStoreData.forEach(item => {
-      const todoListItem = new ToDoItem(item)
-      todoListArr.push(todoListItem)
-    })
-    render()
-  }
-
-  const groupTodoItemsById = Object.groupBy(todoListArr, ({ id }) => id)
-
-  const getId = () => {
-    const id = Math.floor(Math.random() * 10000)
-    if (Object.keys(groupTodoItemsById).length >= 9999) return
-    if (Object.keys(groupTodoItemsById).includes('' + id)) {
-      return getId()
-    }
-    return id
-  }
-
-  const todoCreate = (event) => {
-    event.preventDefault()
-    const text = input.value
-
-    if (!text.length) return
-
-    /** @type {TypeToDoItemParams} */
-    const data = {
-      complite: false,
-      text,
-      id: getId()
+      // [...content.children].forEach((item, contentIndex) => {
+      //   if (index === contentIndex) {
+      //     item.classList.add('tab-content--active')
+      //   } else {
+      //     item.classList.remove('tab-content--active')
+      //   }
+      // })
     }
 
-    const todoItem = new ToDoItem(data)
-    todoListArr.push(todoItem)
-    render()
-    localsave()
+    /**
+     * @param {Event} event 
+     */
+    const buttonHandler = (event) => {
+      /** @type {HTMLElement} */
+      const target = event.target
+      
+      if (target.classList.contains('tab-buttons') || target.classList.contains('tab-button--active')) return      
+
+      const tabIndex = target.dataset.buttonindex
+      
+      tabContentHendler(tabIndex)
+      target.classList.add('tab-button--active')
+
+      for(let button of buttons.children){ // for..in -> for(let key in obj), for..of -> for(let item of iter)
+        if (button.dataset.buttonindex !== tabIndex) {
+          button.classList.remove('tab-button--active')
+        }
+      }
+      
+      
+      // [...buttons.children].forEach((button, index) => {       
+      //   if (button === target) {
+      //     button.classList.add('tab-button--active')
+      //     tabContentHendler(index)
+      //   } else {
+      //     button.classList.remove('tab-button--active')
+      //   }
+      // })
+    }
+
+    buttons.addEventListener('click', buttonHandler)
   }
 
-  form.addEventListener('submit', todoCreate)
+  tabContainers.forEach(tabHandler)
 }
 
-toListCreator('.todo-form', '#todo-text', '.todo-list')
-
-const obj = {
-  a: 1,
-  b: 2,
-  c: 3,
-  d: {
-    a1: 4,
-    b1: 5,
-    c1: 6
-  }
-}
-
-const { b: x, c, a, d: { a1, b1, c1 } } = obj
-
-console.log(obj);
-console.log(a);
-console.log(x);
-console.log(c);
-console.log(a1);
-console.log(b1);
-console.log(c1);
-
-
+tabsContainer({ tabContainer: '.tab-container', tabButtons: '.tab-buttons', tabContent: '.tab-contents' })
