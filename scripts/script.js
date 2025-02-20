@@ -1,94 +1,88 @@
-/**
- * @todo задание на дом: выбрать один из двух вариантов реализации и добавить возможность добавления новых вкладок через кнопку
- *  в общем списке кнопок для табов, содержание контента может быть любым.
- */
-
-/**
- * @typedef {Object} TabsContainerParams
- * @property {string} tabContainer
- * @property {string} tabButtons
- * @property {string} tabContent
- */
-
-/**
- * 
- * @param {TabsContainerParams} param0 
- */
-
-const tabsContainer = ({ tabContainer, tabButtons, tabContent }) => {
-  const tabContainers = document.querySelectorAll(tabContainer)
+const makeSlider = (sliderContainerSelector) => {
+  const slidersContainers = document.querySelectorAll(sliderContainerSelector)
 
   /**
    * 
-   * @param {HTMLDivElement} tabHtmlElement 
+   * @param {HTMLDivElement} sliderContainer 
    */
-  const tabHandler = (tabHtmlElement) => {
-    const buttons = tabHtmlElement.querySelector(tabButtons)
-    const content = tabHtmlElement.querySelector(tabContent)
+  const slider = (sliderContainer) => {
+    /** @type {HTMLElement} */
+    const slides = sliderContainer.querySelector('.slides')
+    const next = sliderContainer.querySelector('.btn-next')
+    const prev = sliderContainer.querySelector('.btn-prev')
+    const pagination = sliderContainer.querySelector('.slider-pagination')
 
-    if (!buttons || !content) return
+    if (!slides || !next || !prev) return
 
-    const tabContentHendler = (index) => {
-      // for (let contentItem of content.children) {
-      //   if (contentItem.dataset.contentindex === index) {
-      //     contentItem.classList.add('tab-content--active')
-      //   } else {
-      //     contentItem.classList.remove('tab-content--active')
-      //   }
-      // }
+    const slideCount = slides.children.length
 
-      [...content.children].forEach(item => {
-        if (item.dataset.contentindex === index) {
-          item.classList.add('tab-content--active')
+    const moveSlideByIndex = (index) => {
+      slides.style.transform = `translateX(-${index * 100}%)`
+      movePagination(index)
+    }
+
+    const makePagination = (count) => {
+      const items = []
+      for (let i = 0; i < count; i++) {
+        const span = document.createElement('span')
+        span.addEventListener('click', () => moveSlideByIndex(i))
+        if (i === 0) {
+          span.classList.add('active')
+        }
+        items.push(span)
+      }
+
+      pagination.append(...items)
+    }
+
+    if (pagination) {
+      makePagination(slideCount)
+    }
+
+    const movePagination = (index) => {
+      [...pagination.children].forEach((paginationItem, i) => {
+        if (i === index) {
+          paginationItem.classList.add('active')
         } else {
-          item.classList.remove('tab-content--active')
+          paginationItem.classList.remove('active')
         }
       })
-
-      // [...content.children].forEach((item, contentIndex) => {
-      //   if (index === contentIndex) {
-      //     item.classList.add('tab-content--active')
-      //   } else {
-      //     item.classList.remove('tab-content--active')
-      //   }
-      // })
     }
 
     /**
-     * @param {Event} event 
+     * 
+     * @param {boolean} direction 
      */
-    const buttonHandler = (event) => {
-      /** @type {HTMLElement} */
-      const target = event.target
-      
-      if (target.classList.contains('tab-buttons') || target.classList.contains('tab-button--active')) return      
+    const slideMove = (direction) => {
+      let position = slides.style.transform || '0'
+      position = position.replace('translateX(', '')
+      position = Math.abs(parseInt(position)) // -400%) -> -400
 
-      const tabIndex = target.dataset.buttonindex
-      
-      tabContentHendler(tabIndex)
-      target.classList.add('tab-button--active')
-
-      for(let button of buttons.children){ // for..in -> for(let key in obj), for..of -> for(let item of iter)
-        if (button.dataset.buttonindex !== tabIndex) {
-          button.classList.remove('tab-button--active')
+      if (direction) {
+        if (position < (slideCount - 1) * 100) {
+          slides.style.transform = `translateX(-${position + 100}%)`
+          !!pagination && movePagination((position + 100) / 100)
+        } else {
+          slides.style.transform = `translateX(-0%)`
+          !!pagination && movePagination(0)
+        }
+      } else {
+        if (position > 0) {
+          slides.style.transform = `translateX(-${position - 100}%)`
+          !!pagination && movePagination((position - 100) / 100)
+        } else {
+          slides.style.transform = `translateX(-${(slideCount - 1) * 100}%)`
+          !!pagination && movePagination(slideCount - 1)
         }
       }
-      
-      
-      // [...buttons.children].forEach((button, index) => {       
-      //   if (button === target) {
-      //     button.classList.add('tab-button--active')
-      //     tabContentHendler(index)
-      //   } else {
-      //     button.classList.remove('tab-button--active')
-      //   }
-      // })
+
     }
 
-    buttons.addEventListener('click', buttonHandler)
+    next.addEventListener('click', () => slideMove(true))
+    prev.addEventListener('click', () => slideMove(false))
   }
 
-  tabContainers.forEach(tabHandler)
+  slidersContainers.forEach(slider)
 }
 
-tabsContainer({ tabContainer: '.tab-container', tabButtons: '.tab-buttons', tabContent: '.tab-contents' })
+makeSlider('.slider-container')
