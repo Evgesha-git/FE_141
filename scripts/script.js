@@ -1,88 +1,144 @@
-const makeSlider = (sliderContainerSelector) => {
-  const slidersContainers = document.querySelectorAll(sliderContainerSelector)
+/**
+ * 
+ * @param {string} content 
+ * @param {boolean} position 
+ * @returns {HTMLDivElement}
+ */
+const createTooltip = (content, position) => {
+  const tooltipContainer = document.createElement('div')
+  tooltipContainer.classList.add('tooltip-container')
+  if (position) {
+    tooltipContainer.style.top = '-5px'
+    tooltipContainer.style.transform = 'translate(-50%, -100%)'
+  } else {
+    tooltipContainer.style.bottom = '-5px'
+    tooltipContainer.style.transform = 'translate(-50%, 100%)'
+  }
+
+  const tooltipContent = document.createElement('p')
+  tooltipContent.classList.add('tooltip-content')
+  tooltipContent.innerText = content
+
+  tooltipContainer.append(tooltipContent)
+  return tooltipContainer
+}
+
+const tooltips = (tooltipsSelector) => {
+  const tooltipsItems = document.querySelectorAll(tooltipsSelector)
 
   /**
    * 
-   * @param {HTMLDivElement} sliderContainer 
+   * @param {HTMLElement} tooltipItem 
    */
-  const slider = (sliderContainer) => {
-    /** @type {HTMLElement} */
-    const slides = sliderContainer.querySelector('.slides')
-    const next = sliderContainer.querySelector('.btn-next')
-    const prev = sliderContainer.querySelector('.btn-prev')
-    const pagination = sliderContainer.querySelector('.slider-pagination')
-
-    if (!slides || !next || !prev) return
-
-    const slideCount = slides.children.length
-
-    const moveSlideByIndex = (index) => {
-      slides.style.transform = `translateX(-${index * 100}%)`
-      movePagination(index)
-    }
-
-    const makePagination = (count) => {
-      const items = []
-      for (let i = 0; i < count; i++) {
-        const span = document.createElement('span')
-        span.addEventListener('click', () => moveSlideByIndex(i))
-        if (i === 0) {
-          span.classList.add('active')
-        }
-        items.push(span)
-      }
-
-      pagination.append(...items)
-    }
-
-    if (pagination) {
-      makePagination(slideCount)
-    }
-
-    const movePagination = (index) => {
-      [...pagination.children].forEach((paginationItem, i) => {
-        if (i === index) {
-          paginationItem.classList.add('active')
-        } else {
-          paginationItem.classList.remove('active')
-        }
-      })
-    }
-
+  const tooltip = (tooltipItem) => {
+    const content = tooltipItem.dataset.content
+    let tooltipConteiner = null
     /**
      * 
-     * @param {boolean} direction 
+     * @param {MouseEvent} event 
      */
-    const slideMove = (direction) => {
-      let position = slides.style.transform || '0'
-      position = position.replace('translateX(', '')
-      position = Math.abs(parseInt(position)) // -400%) -> -400
+    const tooltipHandler = (event) => {
+      const height = window.innerHeight
+      const positionY = event.clientY
+      let topFlag = false
 
-      if (direction) {
-        if (position < (slideCount - 1) * 100) {
-          slides.style.transform = `translateX(-${position + 100}%)`
-          !!pagination && movePagination((position + 100) / 100)
-        } else {
-          slides.style.transform = `translateX(-0%)`
-          !!pagination && movePagination(0)
-        }
-      } else {
-        if (position > 0) {
-          slides.style.transform = `translateX(-${position - 100}%)`
-          !!pagination && movePagination((position - 100) / 100)
-        } else {
-          slides.style.transform = `translateX(-${(slideCount - 1) * 100}%)`
-          !!pagination && movePagination(slideCount - 1)
-        }
+      if (positionY > height * .75) {
+        topFlag = true
       }
 
+      tooltipConteiner = createTooltip(content, topFlag)
+      tooltipItem.append(tooltipConteiner)
     }
 
-    next.addEventListener('click', () => slideMove(true))
-    prev.addEventListener('click', () => slideMove(false))
+    const mouseLeaveHandler = () => {
+      if (!tooltipConteiner) return
+      tooltipConteiner.remove()
+      tooltipConteiner = null
+    }
+
+    tooltipItem.addEventListener('mouseenter', tooltipHandler)
+    tooltipItem.addEventListener('mouseleave', mouseLeaveHandler)
   }
 
-  slidersContainers.forEach(slider)
+  tooltipsItems.forEach(tooltip)
 }
 
-makeSlider('.slider-container')
+tooltips('.tooltip')
+
+const popupHandler = () => {
+  const show = (content) => {
+    const container = document.createElement('div')
+    container.classList.add('popup')
+
+    const popupModal = document.createElement('div')
+    popupModal.classList.add('popup__modal')
+
+    const popupClose = document.createElement('div')
+    popupClose.classList.add('popup__close')
+    popupClose.innerHTML = '&#215;'
+
+    const popupContent = document.createElement('div')
+    popupContent.classList.add('popup__content')
+    popupContent.append(content)
+
+    container.addEventListener('click', (e) => {
+      /** @type {HTMLElement} */
+      const target = e.target
+
+      if (target.classList.contains('popup') || target.classList.contains('popup__close')) {
+        container.remove()
+      }
+    })
+
+    popupModal.append(popupClose, popupContent)
+    container.append(popupModal)
+    document.body.append(container)
+  }
+
+  /**
+   * @param {MouseEvent} event 
+   */
+  const popup = (event) => {
+    /** @type {HTMLLinkElement} */
+    let target = event.target
+
+    if (!target) return
+    if (target.tagName !== 'A') {
+      target = target.closest('a')
+    }
+
+    if (target.tagName !== 'A') return
+    let type = target.dataset.type
+
+    if (!type) return
+    event.preventDefault()
+
+    let content = null
+
+    if (type === 'text') {
+      content = target.dataset.content
+    }
+
+    if (type === 'img') {
+      const img =  new Image()
+      img.src = target.dataset.content
+      content = img
+    }
+
+    if (type === 'content') {
+      const id = target.dataset.id
+      
+      if (!id) return
+
+      const idChild = document.getElementById(id).children[0]
+      if (!idChild) return
+      content = idChild
+    }
+
+    show(content)
+  }
+
+  document.body.addEventListener('click', popup)
+}
+
+popupHandler()
