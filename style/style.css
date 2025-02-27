@@ -12,82 +12,82 @@ body {
   padding: 0 16px;
 }
 
-.tooltip {
-  position: relative;
-  background: #fffa6c54;
-  cursor: help;
+.accordeon-container {
+  max-width: 500px;
+  margin: 0 auto;
+  border: 1px solid;
 }
 
-.tooltip-container {
-  position: absolute;
-  width: 200px;
+.accordeon__item {
+  border-bottom: 3px solid #cdcdcd;
+}
+
+.accordeon__title {
   padding: 5px;
-  border-radius: 5px;
-  background: #fff;
-  box-shadow: 0 0 5px #cdcdcd;
-  left: 50%;
-  z-index: 99999;
-}
-
-.tooltip-content {
-  font-size: 14px;
-}
-
-.popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, .3);
-  padding: 10px;
-
-  
-}
-
-.popup__modal{
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 780px;
-  padding: 20px;
-  border-radius: 15px;
-  background: #fff;
-}
-
-.popup__close {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: 2px solid #000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 30px;
-  transform: translate(50%, -50%);
-  background: #fff;
-  opacity: .4;
+  font-weight: 700;
+  font-size: 18px;
   cursor: pointer;
+  background: #cdcdcd95;
+  position: relative;
 
   &:hover {
-    opacity: 1;
+    background: #cdcdcd;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    right: 5px;
+    top: calc(50% - 4px);
+    transform: rotate(45deg);
+    transform-origin: center;
+    transition: transform .3s;
+  }
+
+  &.active::after {
+    transform: rotate(-135deg);
   }
 }
 
-.hide__element {
-  display: none;
+.accordeon__content {
+  overflow: hidden;
+  display: grid;
+  max-height: 0;
+  transition: max-height .3s;
+
+  * {
+    padding: 5px;
+    transform: translate(0, -100%);
+    transition: transform .3s;
+  }
 }
 
-form {
+.accordeon__title.active+.accordeon__content {
+  max-height: 100vh;
+
+  * {
+    transform: translate(0, 0);
+  }
+}
+
+.numbers {
+  max-width: 400px;
+  margin: 30px auto;
+  border: 1px solid;
+}
+
+.numbers__buttons {
   display: flex;
-  flex-direction: column;
   gap: 5px;
+  border: 1px solid red;
+}
 
-  textarea {
-    resize: none;
-  }
+.numbers__button {
+  padding: 4px;
+  border: 1px solid;
+  cursor: pointer;
 }

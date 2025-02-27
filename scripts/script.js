@@ -1,144 +1,130 @@
-/**
- * 
- * @param {string} content 
- * @param {boolean} position 
- * @returns {HTMLDivElement}
- */
-const createTooltip = (content, position) => {
-  const tooltipContainer = document.createElement('div')
-  tooltipContainer.classList.add('tooltip-container')
-  if (position) {
-    tooltipContainer.style.top = '-5px'
-    tooltipContainer.style.transform = 'translate(-50%, -100%)'
-  } else {
-    tooltipContainer.style.bottom = '-5px'
-    tooltipContainer.style.transform = 'translate(-50%, 100%)'
-  }
-
-  const tooltipContent = document.createElement('p')
-  tooltipContent.classList.add('tooltip-content')
-  tooltipContent.innerText = content
-
-  tooltipContainer.append(tooltipContent)
-  return tooltipContainer
-}
-
-const tooltips = (tooltipsSelector) => {
-  const tooltipsItems = document.querySelectorAll(tooltipsSelector)
+const accordeon = (accordeonSelector) => {
+  const accordeonContainers = document.querySelectorAll(accordeonSelector)
 
   /**
    * 
-   * @param {HTMLElement} tooltipItem 
+   * @param {HTMLDivElement} container 
    */
-  const tooltip = (tooltipItem) => {
-    const content = tooltipItem.dataset.content
-    let tooltipConteiner = null
+  const accordeonHandler = (container) => {
+    const titels = container.querySelectorAll('.accordeon__title')
+
     /**
      * 
-     * @param {MouseEvent} event 
+     * @param {HTMLElement} title 
      */
-    const tooltipHandler = (event) => {
-      const height = window.innerHeight
-      const positionY = event.clientY
-      let topFlag = false
-
-      if (positionY > height * .75) {
-        topFlag = true
-      }
-
-      tooltipConteiner = createTooltip(content, topFlag)
-      tooltipItem.append(tooltipConteiner)
+    const titleHandler = (title) => {
+      title.addEventListener('click', () => {
+        title.classList.toggle('active')
+        titels.forEach(item => {
+          if (item !== title) {
+            item.classList.remove('active')
+          }
+        })
+      })
     }
 
-    const mouseLeaveHandler = () => {
-      if (!tooltipConteiner) return
-      tooltipConteiner.remove()
-      tooltipConteiner = null
-    }
-
-    tooltipItem.addEventListener('mouseenter', tooltipHandler)
-    tooltipItem.addEventListener('mouseleave', mouseLeaveHandler)
+    titels.forEach(titleHandler)
   }
 
-  tooltipsItems.forEach(tooltip)
+  accordeonContainers.forEach(accordeonHandler)
 }
 
-tooltips('.tooltip')
+accordeon('.accordeon-container')
 
-const popupHandler = () => {
-  const show = (content) => {
-    const container = document.createElement('div')
-    container.classList.add('popup')
+function Test(test1, test2) {
+  this.test1 = test1
+  this.test2 = test2
+}
 
-    const popupModal = document.createElement('div')
-    popupModal.classList.add('popup__modal')
+const test1 = new Test(1, 2)
+const test2 = new Test(1, 2)
+const test3 = test2
 
-    const popupClose = document.createElement('div')
-    popupClose.classList.add('popup__close')
-    popupClose.innerHTML = '&#215;'
-
-    const popupContent = document.createElement('div')
-    popupContent.classList.add('popup__content')
-    popupContent.append(content)
-
-    container.addEventListener('click', (e) => {
-      /** @type {HTMLElement} */
-      const target = e.target
-
-      if (target.classList.contains('popup') || target.classList.contains('popup__close')) {
-        container.remove()
-      }
-    })
-
-    popupModal.append(popupClose, popupContent)
-    container.append(popupModal)
-    document.body.append(container)
+const calculate = () => {
+  const container = document.querySelector('.numbers')
+  const input = document.querySelector('.numbers__input')
+  const math = {
+    operandA: null,
+    result: null
   }
 
   /**
+   * 
    * @param {MouseEvent} event 
    */
-  const popup = (event) => {
-    /** @type {HTMLLinkElement} */
-    let target = event.target
+  const clickHandler = (event) => {
+    /** @type {HTMLElement} */
+    const target = event.target
+    console.log(target.className);
 
-    if (!target) return
-    if (target.tagName !== 'A') {
-      target = target.closest('a')
+    switch (target.className) {
+      case 'numbers__button':
+        let value = input.value
+        const num = target.dataset.value
+        input.value = value + num
+        return
+      case 'numbers__buttons':
+        if (!math.operandA) {
+          math.operandA = +input.value
+          input.value = ''
+        } else {
+          const num = +input.value
+          math.result = math.operandA + num
+          math.operandA = math.result
+          input.value = ''
+        }
+        return
+      case 'numbers__input':
+        if (!math.result) {
+          input.value = math.operandA + +input.value
+        } else {
+          input.value = math.result + +input.value
+          math.operandA = null
+          math.result = null
+        }
+        return
+      default:
+        input.value = ''
+        math.operandA = null
+        math.result = null
     }
 
-    if (target.tagName !== 'A') return
-    let type = target.dataset.type
+    // if (target.classList.contains('numbers__button')) {
+    //   let value = input.value
+    //   const num = target.dataset.value
+    //   input.value = value + num
+    // }
 
-    if (!type) return
-    event.preventDefault()
+    // if (target.classList.contains('numbers__buttons')) {
+    //   if (!math.operandA) {
+    //     math.operandA = +input.value
+    //     input.value = ''
+    //   } else {
+    //     const num = +input.value
+    //     math.result = math.operandA + num
+    //     math.operandA = math.result
+    //     input.value = ''
+    //   }
+    // }
 
-    let content = null
+    // if (target.classList.contains('numbers__input')) {
+    //   if (!math.result) {
+    //     input.value = math.operandA + +input.value
+    //   } else {
+    //     input.value = math.result + +input.value
+    //     math.operandA = null
+    //     math.result = null
+    //   }
+    // }
 
-    if (type === 'text') {
-      content = target.dataset.content
-    }
-
-    if (type === 'img') {
-      const img =  new Image()
-      img.src = target.dataset.content
-      content = img
-    }
-
-    if (type === 'content') {
-      const id = target.dataset.id
-      
-      if (!id) return
-
-      const idChild = document.getElementById(id).children[0]
-      if (!idChild) return
-      content = idChild
-    }
-
-    show(content)
+    // if (target.classList.contains('numbers')) {
+    //   input.value = ''
+    //   math.operandA = null
+    //   math.result = null
+    // }
   }
 
-  document.body.addEventListener('click', popup)
+  container.addEventListener('click', clickHandler)
 }
 
-popupHandler()
+calculate()
