@@ -5,89 +5,102 @@
 }
 
 body {
-  font-size: 18px;
+  font-size: 24px;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .container {
   padding: 0 16px;
 }
 
-.accordeon-container {
-  max-width: 500px;
-  margin: 0 auto;
-  border: 1px solid;
+.calculate {
+  width: 303px;
+  margin: 10px auto;
+  background: #303d3f;
 }
 
-.accordeon__item {
-  border-bottom: 3px solid #cdcdcd;
+.calculate__input {
+  color: #fff;
+  text-align: right;
+  padding: 20px;
+  font-size: 54px;
+  overflow-x: auto;
+
+  scrollbar-width: thin;
 }
 
-.accordeon__title {
-  padding: 5px;
-  font-weight: 700;
-  font-size: 18px;
-  cursor: pointer;
-  background: #cdcdcd95;
-  position: relative;
-
-  &:hover {
-    background: #cdcdcd;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    border-bottom: 1px solid;
-    border-right: 1px solid;
-    right: 5px;
-    top: calc(50% - 4px);
-    transform: rotate(45deg);
-    transform-origin: center;
-    transition: transform .3s;
-  }
-
-  &.active::after {
-    transform: rotate(-135deg);
-  }
-}
-
-.accordeon__content {
-  overflow: hidden;
-  display: grid;
-  max-height: 0;
-  transition: max-height .3s;
-
-  * {
-    padding: 5px;
-    transform: translate(0, -100%);
-    transition: transform .3s;
-  }
-}
-
-.accordeon__title.active+.accordeon__content {
-  max-height: 100vh;
-
-  * {
-    transform: translate(0, 0);
-  }
-}
-
-.numbers {
-  max-width: 400px;
-  margin: 30px auto;
-  border: 1px solid;
-}
-
-.numbers__buttons {
+.calculate__buttons {
   display: flex;
-  gap: 5px;
-  border: 1px solid red;
+  cursor: pointer;
 }
 
-.numbers__button {
-  padding: 4px;
-  border: 1px solid;
-  cursor: pointer;
+.calculate__buttons-top {
+  background: #39484a;
+  display: flex;
+
+  .button {
+    border-right: 4px solid #3d4c4e;
+    color: #708689;
+    width: 75px;
+    height: 75px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:last-child {
+      border-right: none;
+    }
+  }
+}
+
+.calculate__buttons-numbers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(4, 75px);
+  background: #303d3f;
+
+  .button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64787b;
+    border-right: 4px solid #f1f7f8;
+    border-top: 4px solid #f1f7f8;
+
+    &:nth-child(3n) {
+      border-right: none;
+    }
+
+    &:nth-child(-n+3) {
+      border-top: none;
+    }
+
+    &:last-child {
+      border-right: none;
+    }
+
+    &.zero {
+      grid-column: span 2;
+    }
+  }
+}
+
+.calculate__buttons-right {
+  background: #6cd1e5;
+  color: #479bac;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .button {
+    border-bottom: 4px solid #69cde1;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
 }
