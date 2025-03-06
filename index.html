@@ -8,38 +8,14 @@
   </head>
   <body>
     <div class="container">
-      <div class="calculate">
-        <div class="calculate__input">0</div>
-        <div class="calculate__buttons">
-          <div class="calculate__buttons-left">
-            <div class="calculate__buttons-top">
-              <div class="button clear" data-value="C">C</div>
-              <div class="button operator" data-value="+/-">&#177;</div>
-              <div class="button operator" data-value="%">%</div>
-            </div>
-            <div class="calculate__buttons-numbers">
-              <div class="button number" data-value="7">7</div>
-              <div class="button number" data-value="8">8</div>
-              <div class="button number" data-value="9">9</div>
-              <div class="button number" data-value="4">4</div>
-              <div class="button number" data-value="5">5</div>
-              <div class="button number" data-value="6">6</div>
-              <div class="button number" data-value="1">1</div>
-              <div class="button number" data-value="2">2</div>
-              <div class="button number" data-value="3">3</div>
-              <div class="button zero number" data-value="0">0</div>
-              <div class="button number" data-value=".">.</div>
-            </div>
-          </div>
-          <div class="calculate__buttons-right">
-            <div class="button operator" data-value="/">&#247;</div>
-            <div class="button operator" data-value="*">&#215;</div>
-            <div class="button operator" data-value="-">-</div>
-            <div class="button operator" data-value="+">+</div>
-            <div class="button operator" data-value="=">=</div>
-          </div>
-        </div>
-      </div>
+      <textarea id="input"></textarea>
+      <button id="button">Convert</button>
+      <textarea id="output" readonly></textarea>
+    </div>
+    <div class="container">
+      <textarea id="inputRev"></textarea>
+      <button id="buttonRev">Convert</button>
+      <textarea id="outputRev" readonly></textarea>
     </div>
   </body>
   <script src="./scripts/script.js"></script>

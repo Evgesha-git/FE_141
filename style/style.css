@@ -4,103 +4,25 @@
   box-sizing: border-box;
 }
 
-body {
-  font-size: 24px;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.container {
-  padding: 0 16px;
-}
-
-.calculate {
-  width: 303px;
-  margin: 10px auto;
-  background: #303d3f;
-}
-
-.calculate__input {
-  color: #fff;
-  text-align: right;
-  padding: 20px;
-  font-size: 54px;
-  overflow-x: auto;
-
-  scrollbar-width: thin;
-}
-
-.calculate__buttons {
-  display: flex;
-  cursor: pointer;
-}
-
-.calculate__buttons-top {
-  background: #39484a;
-  display: flex;
-
-  .button {
-    border-right: 4px solid #3d4c4e;
-    color: #708689;
-    width: 75px;
-    height: 75px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &:last-child {
-      border-right: none;
-    }
-  }
-}
-
-.calculate__buttons-numbers {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(4, 75px);
-  background: #303d3f;
-
-  .button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #64787b;
-    border-right: 4px solid #f1f7f8;
-    border-top: 4px solid #f1f7f8;
-
-    &:nth-child(3n) {
-      border-right: none;
-    }
-
-    &:nth-child(-n+3) {
-      border-top: none;
-    }
-
-    &:last-child {
-      border-right: none;
-    }
-
-    &.zero {
-      grid-column: span 2;
-    }
-  }
-}
-
-.calculate__buttons-right {
-  background: #6cd1e5;
-  color: #479bac;
-  width: 100%;
+.container{
+  max-width: 400px;
+  margin: 20px auto;
   display: flex;
   flex-direction: column;
+  gap: 5px;
+}
 
-  .button {
-    border-bottom: 4px solid #69cde1;
-    flex-grow: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.container textarea {
+  resize: none;
+  height: 140px;
+}
 
-    &:last-child {
-      border-bottom: none;
-    }
+.container button {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+
+  &:hover {
+    box-shadow: 0 0 5px #cdcdcdd3;
   }
 }
