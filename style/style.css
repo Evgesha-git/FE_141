@@ -4,25 +4,3 @@
   box-sizing: border-box;
 }
 
-.container{
-  max-width: 400px;
-  margin: 20px auto;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.container textarea {
-  resize: none;
-  height: 140px;
-}
-
-.container button {
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-
-  &:hover {
-    box-shadow: 0 0 5px #cdcdcdd3;
-  }
-}
