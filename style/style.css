@@ -4,3 +4,81 @@
   box-sizing: border-box;
 }
 
+.container {
+  max-width: 400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.container form {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 5px;
+
+  input {
+    box-sizing: border-box;
+    font-size: 18px;
+    padding: 4px;
+  }
+
+  textarea {
+    resize: none;
+    font-size: 18px;
+    box-sizing: border-box;
+    padding: 5px;
+    height: 80px;
+  }
+
+  button {
+    box-sizing: border-box;
+    font-size: 18px;
+    padding: 5px;
+  }
+}
+
+.notes {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.item {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  border-bottom: 2px solid #cdcdcd;
+  padding-bottom: 5px;
+}
+
+.noteContent {
+  flex-grow: 1;
+}
+
+.edit {
+  border: 1px solid #D5F2D5;
+  color: #3BAA35;
+  background: #EBF6EB;
+  border-radius: 3px;
+  padding: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(76, 175, 80, 0.04);
+  }
+}
+
+.remove {
+  border: 1px solid #FBE3E3;
+  color: #E66;
+  background: #FDF0F0;
+  border-radius: 3px;
+  padding: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(76, 175, 80, 0.04);
+  }
+}
