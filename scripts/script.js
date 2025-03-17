@@ -1,3 +1,4 @@
+
 class Test {
   #a = null
   #b = null
@@ -39,14 +40,15 @@ class Note {
   data = {}
 
   /**
-   * @param {{title: ?string, content: ?string}} param0 
+   * @param {{title: ?string, content: ?string, id: ?string}} param0 
    */
-  constructor({ title, content }) {
+  constructor({ title, content, id }) {
     if (!title && !content)
       throw new Error('Хотя бы одно поле должно быть заполено')
     this.data = {
       content,
-      title
+      title,
+      id
     }
   }
 
@@ -68,11 +70,26 @@ class Notes {
   /** @type {{data: NoteType}[]} */
   notes = []
 
-  add({ title, content }) {
+  add(data) {
     try {
-      const note = new Note({ title, content })
-      const id = Date.now().toString(36)
-      note.edit({ id })
+      const note = new Note(data)
+      if (!note.data.id) {
+        const id = Date.now().toString(36)
+        note.edit({ id })
+      }
+
+      const fetchData = {
+        data: note
+      }      
+
+      fetch('http://localhost:3000/api/notes', {
+        method: 'POST',
+        headers: {
+          'Accept': "application/json",
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify(fetchData)
+      })
 
       this.notes.push(note)
     } catch (error) {
@@ -80,35 +97,93 @@ class Notes {
     }
   }
 
-  get noteById () {
+  addNotesObject (data) {
+    try {
+      const note = new Note(data)
+      if (!note.data.id) {
+        const id = Date.now().toString(36)
+        note.edit({ id })
+      }
+
+      this.notes.push(note)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  get noteById() {
     return this.notes.reduce((acc, note) => {
       acc[note.data.id] = note
       return acc
     }, {})
   }
 
-  edit (id, newData) {
+  edit(id, newData) {
     const note = this.noteById[id]
     if (!note) return
     note.edit(newData)
   }
 
-  remove (id) {
+  remove(id) {
     this.notes = this.notes.filter(note => note.data.id !== id)
+  }
+
+  get store() {
+    const data = localStorage.getItem('notes')
+    return JSON.parse(data)
+  }
+
+  set store(notes) {
+    const data = JSON.stringify(notes)
+    localStorage.setItem('notes', data)
+  }
+
+  setCookies(name, maxAge) {
+    const options = {
+      path: '/',
+      'max-age': maxAge
+    };
+
+    if (options.expires instanceof Date) {
+      options.expires = options.expires.toUTCString();
+    }
+
+    let updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent('');
+
+    for (let optionKey in options) {
+      updatedCookie += "; " + optionKey;
+      let optionValue = options[optionKey];
+      if (optionValue !== true) {
+        updatedCookie += "=" + optionValue;
+      }
+    }
+
+    document.cookie = updatedCookie;
+  }
+
+  getCookies(name) {
+    let matches = document.cookie.match(new RegExp(
+      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? true : false
+  }
+
+  clearStore () {
+    localStorage.removeItem('notes')
   }
 }
 
 // const notes = new Notes()
 
 class NotesApp extends Notes {
-  constructor (selector) {
+  constructor(selector) {
     super()
     this.container = document.querySelector(selector)
     this.noteContainer = document.createElement('div')
     this.init()
   }
 
-  init () {
+  init() {
     const form = document.createElement('form')
     const title = document.createElement('input')
     title.setAttribute('type', 'text')
@@ -126,6 +201,8 @@ class NotesApp extends Notes {
       }
 
       this.add(data)
+      this.store = this.notes
+      this.setCookies('notes', 3600)
       this.render()
 
       title.value = ''
@@ -135,10 +212,29 @@ class NotesApp extends Notes {
     this.noteContainer.classList.add('notes')
 
     this.container.append(form, this.noteContainer)
+
+    if (!this.getCookies('notes')) {
+      this.clearStore()
+    }
+
+    if (this.store) {
+      // this.notes = this.store
+      this.store?.forEach(note => this.addNotesObject(note.data))
+    }
+
+    fetch('http://localhost:3000/api/notes')
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        data?.forEach(note => this.addNotesObject(note.data))
+        this.render()
+      })
+      .catch(error => console.log(error))
+
     this.render()
   }
 
-  render () {
+  render() {
     if (!this.notes.length) { //this.notes.length === 0
       this.noteContainer.innerHTML = `<h2 className="title">Список заметок пуст</h2>`
     } else {
@@ -159,6 +255,10 @@ class NotesApp extends Notes {
         remove.addEventListener('click', () => {
           if (confirm('Вы точно хотите удалить?')) {
             this.remove(note.data.id)
+            fetch(`http://localhost:3000/api/notes/${note.data.id}`, {
+              method: 'DELETE'
+            })
+            this.store = this.notes
             this.render()
           }
         })
@@ -176,6 +276,7 @@ class NotesApp extends Notes {
             }
 
             this.edit(note.data.id, data)
+            this.store = this.notes
             this.render()
             editable = !editable
           } else {
