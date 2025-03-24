@@ -47,21 +47,9 @@ class Notes {
         const id = Date.now().toString(36)
         note.edit({ id })
       }
-
-      const fetchData = {
-        data: note
-      }
-
-      fetch('http://localhost:3000/api/notes', {
-        method: 'POST',
-        headers: {
-          'Accept': "application/json",
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify(fetchData)
-      })
-
+      
       this.notes.push(note)
+      return note
     } catch (error) {
       console.error(error)
     }
@@ -147,6 +135,52 @@ class Notes {
     const notes = await resp.json()
     return notes
   }
+
+  async setApidata(note) {
+    const fetchData = {
+      data: note
+    }
+
+    await fetch('http://localhost:3000/api/notes', {
+      method: 'POST',
+      headers: {
+        'Accept': "application/json",
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify(fetchData)
+    })
+  }
+
+  async removeApiData (id) {
+    const responce = await fetch(`http://localhost:3000/api/notes/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Accept': "application/json",
+        'Content-type': 'application/json'
+      }
+    })
+
+    return await responce.json()
+  }
+
+  async updateApiData (id, newData) {
+    const resp = await fetch(`http://localhost:3000/api/notes/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Accept': "application/json",
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        data: newData
+      })
+    })
+
+    return await resp.json()
+  }
+
+  get notesIds () {
+    return this.notes.map(note => note.data.id)
+  }
 }
 
 // const notes = new Notes()
@@ -176,11 +210,11 @@ class NotesApp extends Notes {
         content: content.value
       }
 
-      this.add(data)
+      const note = this.add(data)
       this.store = this.notes
       this.setCookies('notes', 3600)
+      this.setApidata(note)
       this.render()
-
       title.value = ''
       content.value = ''
     })
@@ -195,12 +229,16 @@ class NotesApp extends Notes {
 
     if (this.store) {
       // this.notes = this.store
-      this.store?.forEach(note => this.addNotesObject(note.data))
+      this.store?.forEach(note => this.add(note.data))
     }
 
     this.getData()
       .then(notes => {
-        notes?.forEach(note => this.addNotesObject(note.data))
+        notes?.forEach(noteApi => {
+          if (!this.notesIds.includes(noteApi.data.id)){ // ([id1, id2, id3]).includes(noteApi.data.id)
+            this.add(noteApi.data)
+          }
+        })
         this.render()
       })
       .catch(error => console.log(error))
@@ -235,20 +273,23 @@ class NotesApp extends Notes {
 
         remove.classList.add('remove')
         remove.innerHTML = '&#10060;'
-        remove.addEventListener('click', () => {
+        remove.addEventListener('click', async () => {
           if (confirm('Вы точно хотите удалить?')) {
             this.remove(note.data.id)
-            fetch(`http://localhost:3000/api/notes/${note.data.id}`, {
-              method: 'DELETE'
-            })
-            this.store = this.notes
-            this.render()
+            try {
+              await this.removeApiData(note.data.id)
+            } catch (error) {
+              console.log(error);
+            } finally {
+              this.store = this.notes
+              this.render()
+            }
           }
         })
 
         edit.classList.add('edit')
         edit.innerHTML = '&#9998;'
-        edit.addEventListener('click', () => {
+        edit.addEventListener('click', async () => {
           if (editable) {
             edit.innerHTML = '&#9998;'
             title.contentEditable = false
@@ -260,6 +301,11 @@ class NotesApp extends Notes {
 
             this.edit(note.data.id, data)
             this.store = this.notes
+            try {
+              await this.updateApiData(note.data.id, data)
+            } catch (error) {
+              console.log(error);              
+            }
             this.render()
             editable = !editable
           } else {
@@ -284,141 +330,3 @@ class NotesApp extends Notes {
 
 new NotesApp('.container')
 
-
-// const requestFunction = (url) => {
-//   const request = new XMLHttpRequest()
-//   request.open('GET', url)
-
-//   request.responseType = 'text'
-
-//   request.onload = () => {
-
-//   }
-
-//   request.onerror = (error) => {
-
-//   }
-
-//   request.send()
-// }
-
-// const promise = new Promise(function (resolve, reject) {
-//   setTimeout(() => resolve('Промис выполнен'), 2000)
-//   setTimeout(() => reject('Промис отклонен'), 3000)
-// })
-
-// console.log(promise);
-
-
-// promise
-//   .then(function (data) {
-//     console.log(data)
-//   })
-//   .catch(function (error) {
-//     console.log(error)
-//   })
-//   .finally(function () {
-//     console.log("Отработает в любом случае")
-//   })
-
-function httpGet(url, method) {
-  return new Promise(function (resolve, reject) {
-    const xhr = new XMLHttpRequest()
-    xhr.open(method, url)
-    xhr.onload = function () {
-      if (xhr.status.toString()[0] === '2') {
-        resolve(xhr.response)
-      } else {
-        const error = new Error(xhr.statusText)
-        error.code = xhr.status
-        reject(error)
-      }
-    }
-
-    xhr.onerror = function () {
-      reject(new Error('Network error'))
-    }
-
-    xhr.send()
-  })
-}
-
-httpGet('http://localhost:3000/api/notes/', 'GET')
-  .then((response) => {
-    console.log(response)
-  })
-  .catch((error) => {
-    console.log(error)
-  })
-
-// Promise.resolve(1)
-//   .then((val) => console.log(val))
-
-// const createPromise = (time, rejected) =>
-//   new Promise((resolve, reject) => {
-//     setTimeout(() => resolve(time), time)
-//     if (rejected) {
-//       setTimeout(() => reject(time / 2), time / 2)
-//     }
-//   })
-
-// const p1 = createPromise(4000)
-// const p2 = createPromise(3000, true)
-// const p3 = createPromise(5000)
-
-// Promise.all([p1, p2, p3])
-//   .then(data => console.log(data))
-//   .catch(error => console.log(error))
-
-// Promise.allSettled([p1, p2, p3])
-//   .then(data => console.log(data))
-
-// Promise.race([p1, p2, p3])
-//   .then(data => console.log(data))
-
-// Promise.resolve('Seccess')
-//   .then(x => {
-//     console.log('THEN 1', x)
-//     return Promise.resolve('Seccess 2')
-//   })
-//   .catch(x => console.log('CATCH 1', x))
-//   .then(x => {
-//     console.log('THEN 2', x)
-//     return Promise.resolve('Seccess 3')
-//   })
-//   .catch(x => console.log('CATCH 2', x))
-//   .then(x => {
-//     console.log('THEN 3', x)
-//     return Promise.resolve('Seccess 4')
-//   })
-//   .catch(x => console.log('CATCH 3', x))
-//   .then(x => {
-//     console.log('THEN 4', x)
-//     return Promise.resolve('Seccess 5')
-//   })
-//   .catch(x => console.log('CATCH 4', x))
-
-const f = async () => {
-  try {
-    const x1 = await Promise.resolve('Success')
-    console.log('THEN 1', x1)
-    const x2 = await Promise.resolve('Success 2')
-    console.log('THEN 2', x2)
-    const x3 = await Promise.reject('Fail 3')
-    console.log('THEN 2', x3)
-    const x4 = await Promise.resolve('Success 4')
-    console.log('THEN 2', x4)
-  } catch (error) {
-    console.log('CATCH', error)
-  }
-}
-
-const getData = async () => {
-  const resp = await httpGet('http://localhost:3000/api/notes/', 'GET')
-  return resp
-}
-
-fetch('http://localhost:3000/api/notes/')
-  .then(resp => resp.json())
-  .then(data => console.log(data))
-  .catch(error => console.log(error))
