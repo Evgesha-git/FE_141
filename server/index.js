@@ -4,6 +4,8 @@ const fs = require('fs')
 
 let rawdata = fs.readFileSync('db.json')
 
+const apyKey = '8643e5fa4d67cb1ad3c160e1d6c66d90'
+
 const app = express()
 app.use(express.json())
 app.use(cors({
@@ -79,6 +81,18 @@ app.patch('/api/notes/:id', function (req, resp) {
   })
   fs.writeFileSync('db.json', JSON.stringify({ notes }))
   resp.send(data)
+})
+
+app.get('/api/wheather', async (req, resp) => {
+  const {q, lang, units} = req.query
+  try {
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${q}&lang=${lang}&units=${units}&appid=${apyKey}`)
+    
+    const data = await response.json()
+    resp.send(JSON.stringify(data))
+  } catch (error) {
+    resp.sendStatus(400).send(error.message)
+  }
 })
 
 app.listen(3000, function () {
