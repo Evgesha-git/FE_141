@@ -1,3 +1,5 @@
+import cart from "../../pages/Cart.js"
+
 class Main {
   constructor () {
     this.main = document.createElement('main')
@@ -8,12 +10,25 @@ class Main {
   async routerHandler () {
     this.main.innerHTML = ''
     let hash = window.location.hash.slice(1)
+    let id = null
 
     if (!hash) hash = "Home"
 
-    const module = await import(`../../pages/${hash}.js`)
-    const item = new module.default().render()
-    this.main.append(item)
+    if (hash.indexOf('_') !== -1) {
+      let index = hash.indexOf('_')
+      id = hash.slice(index + 1)
+      hash = hash.slice(0, index)
+    }
+
+    if (hash === 'cart') {
+      const item = cart.render()
+      this.main.append(item)
+    } else {
+      const module = await import(`../../pages/${hash}.js`)
+      const item = new module.default(id).render()
+      this.main.append(item)
+    }
+    
   }
 
   router () {

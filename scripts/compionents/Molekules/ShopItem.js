@@ -9,6 +9,8 @@
  * @property {{rate: number, count: number}} rating
  */
 
+import Button from "./Button.js"
+
 class ShopItem {
   /**
    * 
@@ -31,9 +33,11 @@ class ShopItem {
     titleText.classList.add('item__title')
     titleText.innerHTML = title
 
-    const priceItem = document.createElement('span')
+    const priceItem = document.createElement('div')
     priceItem.classList.add('item__price')
-    priceItem.innerHTML = price
+    const priceText = document.createElement('span')
+    priceText.innerHTML = price
+    priceItem.append(new Button(this.props).render(), priceText)
 
     const img = document.createElement('img')
     img.setAttribute('src', image)
@@ -43,6 +47,9 @@ class ShopItem {
     imgContainer.append(img)
 
     this.item.append(titleText, imgContainer, priceItem)
+    this.item.addEventListener('click', () => {
+      window.open(`#Product_${this.props.id}`, '_self')
+    })
   }
 
   render() {
