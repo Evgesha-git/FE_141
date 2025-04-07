@@ -1,6 +1,7 @@
 import Header from "./compionents/Layout/Header.js"
 import Footer from "./compionents/Layout/Footer.js"
 import Main from "./compionents/Layout/Main.js"
+import '../style/style.css'
 
 const root = document.getElementById('root')
 

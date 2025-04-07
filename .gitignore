@@ -2,3 +2,6 @@
 *.zip
 
 .vscode
+
+node_modules
+production

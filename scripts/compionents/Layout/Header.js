@@ -1,4 +1,5 @@
 import { widget } from "../../pages/Cart.js"
+import '../../../style/header.scss'
 
 class Header {
   constructor () {
