@@ -1,5 +1,6 @@
-import { widget } from "../../pages/Cart.js"
+import { widget } from "../../pages/Cart"
 import '../../../style/header.scss'
+import { getImage } from "../../utils/getImage"
 
 class Header {
   constructor () {
@@ -13,7 +14,7 @@ class Header {
     this.header = document.createElement('header')
     this.header.innerHTML = `
       <div class="logo">
-        <img src="" alt="logo" />
+        <img src="${getImage(50, 60, 'cdcdcd')}" alt="logo" />
       </div>
       <nav>
         <ul>

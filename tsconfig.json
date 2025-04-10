@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "module": "ES6",
+    "declaration": true,
+    "sourceMap": true,
+    "outDir": "./production",
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "noImplicitAny": true,
+    "jsx": "react",
+    "allowJs": true
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

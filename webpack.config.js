@@ -11,6 +11,9 @@ module.exports = {
     path: path.resolve(__dirname, 'production'),
     filename: '[name].[contenthash].js'
   },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js', 'jsx']
+  },
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
@@ -29,6 +32,10 @@ module.exports = {
       {
         test: /.(c|sa|sc)ss$/i,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+      },
+      {
+        test: /\.tsx?$/i,
+        use: 'ts-loader'
       }
     ]
   }
