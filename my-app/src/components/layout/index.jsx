@@ -1,3 +1,4 @@
+import CartProvider from "../shared/context/CartContext"
 import Footer from "./footer"
 import Header from "./header"
 import Main from "./main/ui"
@@ -5,9 +6,11 @@ import Main from "./main/ui"
 const Layout = () => {
   return (
     <>
-      <Header />
-      <Main />
-      <Footer />
+      <CartProvider>
+        <Header />
+        <Main />
+        <Footer />
+      </CartProvider>
     </>
   )
 }

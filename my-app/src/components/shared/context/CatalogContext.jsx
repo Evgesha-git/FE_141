@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { getCatalogItems } from "../api/storeApi";
+import { getCatalogItems, getProductById as getProductApiById } from "../api/storeApi";
 
 
 const CatalogContext = createContext()
@@ -9,7 +9,7 @@ export const ContextProvider = ({ children }) => {
 
   const getProductById = async (id) => {
     if (!catalog.length) {
-      const { data } = await getProductById(id)
+      const { data } = await getProductApiById(id)
       return data
     } else {
       return catalog.find(item => item.id === id)
