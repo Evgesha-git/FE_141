@@ -1,18 +1,20 @@
 import { Box, Button, TextField, Typography } from "@mui/material"
 import { useSelector } from "react-redux"
-import { useCollectionData } from 'react-firebase-hooks/firestore'
-import { collection, query, addDoc, orderBy, serverTimestamp, where } from 'firebase/firestore'
+import { useCollection } from 'react-firebase-hooks/firestore'
+import { collection, query, addDoc, orderBy, serverTimestamp, where, getDocs } from 'firebase/firestore'
 import { db } from "../../fb/initial"
 import { useState } from "react"
+import { useEffect } from "react"
 
 
 const Chat = () => {
   const [text, setText] = useState('')
+  const [messages, setMessages] = useState([])
   /** @type {import("../../store/reducers/userSlice/userSlice").UserReducer} */
   const userState = useSelector(state => state.user)
   const { user } = userState
 
-  const [messages, loading, error] = useCollectionData(
+  const [docs, loading, error] = useCollection(
     // query(collection(db, 'chat'), [orderBy('createAt'), where('uid', '==', user.uid)])
     query(collection(db, 'chat'), orderBy('createAt'))
   )
@@ -29,6 +31,32 @@ const Chat = () => {
 
     setText('')
   }
+
+  const getDocData = async () => {
+    const doc = await getDocs(collection(db, 'chat'))
+
+    doc.forEach(d => {
+      // console.log(d.data());
+
+    })
+  }
+
+  useEffect(() => {
+    getDocData()
+  }, [])
+
+  useEffect(() => {
+    const newMessages = []
+    docs?.forEach(m => {
+      const data = {
+        docId: m.id,
+        ...m.data()
+      }
+      newMessages.push(data)
+    })
+    setMessages(newMessages);
+
+  }, [messages])
 
   return (
     <Box
@@ -49,14 +77,17 @@ const Chat = () => {
             display: 'flex',
             flexDirection: message.uid === user.uid ? 'row-reverse' : 'row',
           }}>
-            <Box sx={{
-              border: '1px solid',
-              borderColor: message.uid === user.uid ? 'green' : 'gray',
-              borderRadius: '6px',
-              display: 'flex',
-              gap: '5px',
-              width: '50%'
-            }}>
+            <Box
+              sx={{
+                border: '1px solid',
+                borderColor: message.uid === user.uid ? 'green' : 'gray',
+                borderRadius: '6px',
+                display: 'flex',
+                gap: '5px',
+                width: '50%'
+              }}
+              onClick={() => console.log(message.docId)}
+            >
               <Box>
                 <Typography variant="body1">{message.displayName}</Typography>
                 <Box sx={{
