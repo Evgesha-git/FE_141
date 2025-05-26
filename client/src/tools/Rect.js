@@ -5,8 +5,8 @@ export default class Rect extends Tool {
   startX = null
   startY = null
 
-  constructor(canvas) {
-    super(canvas)
+  constructor(canvas, socket, id) {
+    super(canvas, socket, id)
     this.listen()
   }
 

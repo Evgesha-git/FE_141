@@ -14,11 +14,23 @@ import canvasState from '../../../store/canvasState'
 import Rect from '../../../tools/Rect'
 import Circle from '../../../tools/Circle'
 import Eraser from '../../../tools/Eraser'
+import Line from '../../../tools/Line'
+import userStore from '../../../store/userStore'
 
 const Toolbar = observer(() => {
   const colorChange = (e) => {
     toolStore.setFillColor(e.target.value)
     toolStore.setStrokeColor(e.target.value)
+  }
+
+  const download = () => {
+    const dataUrl = canvasState.canvas.toDataURL()
+    const a = document.createElement('a')
+    a.href = dataUrl
+    a.download = '.png'
+    document.body.append(a)
+    a.click()
+    document.body.removeChild(a)
   }
 
   return (
@@ -32,36 +44,36 @@ const Toolbar = observer(() => {
       }}
     >
       <IconButton 
-        onClick={() => toolStore.setTool(new Brush(canvasState.canvas))}
+        onClick={() => toolStore.setTool(new Brush(canvasState.canvas, userStore.socket, userStore.sessionID))}
       >
         <BrushIcon />
       </IconButton>
       <IconButton 
-        onClick={() => toolStore.setTool(new Rect(canvasState.canvas))}
+        onClick={() => toolStore.setTool(new Rect(canvasState.canvas, userStore.socket, userStore.sessionID))}
       >
         <CropSquareIcon />
       </IconButton>
       <IconButton 
-        onClick={() => toolStore.setTool(new Circle(canvasState.canvas))}
+        onClick={() => toolStore.setTool(new Circle(canvasState.canvas, userStore.socket, userStore.sessionID))}
       >
         <CircleIcon />
       </IconButton>
       <IconButton 
-        onClick={() => toolStore.setTool(new Eraser(canvasState.canvas))}
+        onClick={() => toolStore.setTool(new Eraser(canvasState.canvas, userStore.socket, userStore.sessionID))}
       >
         <DriveFileRenameOutlineIcon />
       </IconButton>
-      <IconButton >
+      <IconButton onClick={() => toolStore.setTool(new Line(canvasState.canvas, userStore.socket, userStore.sessionID))}>
         <HorizontalRuleIcon />
       </IconButton>
       <input type='color' onChange={(e) => colorChange(e)}/>
-      <IconButton sx={{ marginLeft: 'auto' }}>
+      <IconButton sx={{ marginLeft: 'auto' }} onClick={() => canvasState.undo()}>
         <UndoIcon />
       </IconButton>
-      <IconButton >
+      <IconButton onClick={() => canvasState.redo()}>
         <RedoIcon />
       </IconButton>
-      <IconButton >
+      <IconButton onClick={download}>
         <SaveIcon />
       </IconButton>
     </Box>
