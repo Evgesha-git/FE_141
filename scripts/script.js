@@ -8,7 +8,7 @@
 class Note {
   /** @type {NoteType} */
   data = {}
-
+  
   /**
    * @param {{title: ?string, content: ?string, id: ?string}} param0 
    */
@@ -20,6 +20,8 @@ class Note {
       title,
       id
     }
+
+    console.log(this.data);  
 
     for (let index = 0; index < 10; index++) {
       console.log(index);
