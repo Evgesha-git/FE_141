@@ -9,7 +9,6 @@ class Note {
   /** @type {NoteType} */
   data = {}
   
-
   /**
    * @param {{title: ?string, content: ?string, id: ?string}} param0 
    */
@@ -22,8 +21,7 @@ class Note {
       id
     }
 
-    console.log(this.data);
-    
+    console.log(this.data);  
   }
 
   /**
