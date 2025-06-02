@@ -21,6 +21,9 @@ export const googleAuth = createAsyncThunk(
   async () => {
     const provider = new GoogleAuthProvider()
     const { user } = await signInWithPopup(auth, provider)
+    localStorage.setItem('uid', user.uid)
+    console.log(user);
+    
     return user
   }
 )
@@ -31,6 +34,9 @@ export const userSlice = createSlice({
   reducers: {
     clearUser(state) {
       state.user = null
+    },
+    setUser(state, action) {
+      state.user = action.payload
     }
   },
   extraReducers: (builder) =>

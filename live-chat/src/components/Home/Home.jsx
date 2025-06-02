@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { signOut } from 'firebase/auth'
 import { auth } from "../../fb/initial"
 import { Box, Button } from '@mui/material'
+import { useEffect } from "react"
 
 
 const Home = () => {
@@ -12,6 +13,7 @@ const Home = () => {
   const logOut = () => {
     signOut(auth)
     dispatch(userSlice.actions.clearUser())
+    localStorage.removeItem('uid')
   }
 
   return (
