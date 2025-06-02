@@ -20,6 +20,11 @@ class Note {
       title,
       id
     }
+
+    for (let index = 0; index < 10; index++) {
+      console.log(index);
+    }
+
   }
 
   /**
@@ -47,7 +52,7 @@ class Notes {
         const id = Date.now().toString(36)
         note.edit({ id })
       }
-      
+
       this.notes.push(note)
       return note
     } catch (error) {
@@ -130,7 +135,7 @@ class Notes {
     localStorage.removeItem('notes')
   }
 
-  async getData () {
+  async getData() {
     const resp = await fetch('http://localhost:3000/api/notes')
     const notes = await resp.json()
     return notes
@@ -151,7 +156,7 @@ class Notes {
     })
   }
 
-  async removeApiData (id) {
+  async removeApiData(id) {
     const responce = await fetch(`http://localhost:3000/api/notes/${id}`, {
       method: 'DELETE',
       headers: {
@@ -163,7 +168,7 @@ class Notes {
     return await responce.json()
   }
 
-  async updateApiData (id, newData) {
+  async updateApiData(id, newData) {
     const resp = await fetch(`http://localhost:3000/api/notes/${id}`, {
       method: 'PATCH',
       headers: {
@@ -178,7 +183,7 @@ class Notes {
     return await resp.json()
   }
 
-  get notesIds () {
+  get notesIds() {
     return this.notes.map(note => note.data.id)
   }
 }
@@ -235,7 +240,7 @@ class NotesApp extends Notes {
     this.getData()
       .then(notes => {
         notes?.forEach(noteApi => {
-          if (!this.notesIds.includes(noteApi.data.id)){ // ([id1, id2, id3]).includes(noteApi.data.id)
+          if (!this.notesIds.includes(noteApi.data.id)) { // ([id1, id2, id3]).includes(noteApi.data.id)
             this.add(noteApi.data)
           }
         })
@@ -304,7 +309,7 @@ class NotesApp extends Notes {
             try {
               await this.updateApiData(note.data.id, data)
             } catch (error) {
-              console.log(error);              
+              console.log(error);
             }
             this.render()
             editable = !editable
